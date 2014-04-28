@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 
-struct {
+struct stuff {
     int id;
     int phases;
     int current_phase;
