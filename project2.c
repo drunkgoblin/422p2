@@ -12,5 +12,5 @@ struct stuff {
 
 
 int main() {
-
+    add soemthing anywhere;
 }
