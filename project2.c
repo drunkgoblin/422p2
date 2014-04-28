@@ -13,7 +13,7 @@ struct stuff {
 struct queue {
     stuff *data;
     queue *next;
-}
+};
 
 int main() {
     queue micky;
