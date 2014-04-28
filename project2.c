@@ -10,7 +10,13 @@ struct stuff {
     int completed;
 };
 
+struct queue {
+    stuff *data;
+    queue *next;
+}
 
 int main() {
-
+    queue micky;
+    micky.data.id = 3;
+    print(micky.data.id);
 }
