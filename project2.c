@@ -12,5 +12,6 @@ struct stuff {
 
 
 int main() {
-    add soemthing anywhere;
+
 }
+//hot chilis hurt my ass
