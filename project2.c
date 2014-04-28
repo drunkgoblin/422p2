@@ -14,4 +14,3 @@ struct stuff {
 int main() {
 
 }
-//hot chilis hurt my ass
