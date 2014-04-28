@@ -12,17 +12,37 @@ struct stuff {
 
 struct queue {
     struct stuff data;
-    struct queue *next;
-};
+    struct queue * next;
+}head;
+
+struct queue readrunning;
+struct queue * waitingio;
+struct queue * finished;
+
+int job() {
+
+}
+
+int cpu() {
+
+}
+
+int iostuff() {
+
+}
+
+int pop() {
+
+}
 
 int main() {
-    struct queue micky;
-    struct queue rudolph;
-    struct queue boris;
-    micky.data.id = 3;
-    rudolph.data.id = 4;
-    boris.data.id = 5;
-    printf("%d\n",micky.data.id);
-    printf("%d\n",rudolph.data.id);
-    printf("%d\n",boris.data.id);
+    readrunning.data.id = 3;
+   //readrunning->next;
+    //readrunning->next->data.id = 17;
+    //waitingio->data->id = 4;
+    //finished->data->id = 5;
+    printf("%d\n",readrunning.data.id);
+    //printf("%d\n",readrunning->next->data->id);
+    //printf("%d\n",waitingio->data->id);
+    //printf("%d\n",finished->data->id);
 }
