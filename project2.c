@@ -15,7 +15,7 @@ struct queue {
     struct queue * next;
 }head;
 
-struct queue readrunning;
+struct queue * readrunning;
 struct queue * waitingio;
 struct queue * finished;
 
@@ -36,13 +36,18 @@ int pop() {
 }
 
 int main() {
-    readrunning.data.id = 3;
-   //readrunning->next;
-    //readrunning->next->data.id = 17;
-    //waitingio->data->id = 4;
+    struct queue piggy;
+    readrunning = &piggy;
+    readrunning->data.id = 3;
+    struct queue phillipe;
+    readrunning->next = &phillipe;
+    readrunning->next->data.id = 17;
+    struct queue shit;
+    waitingio = &shit;
+    waitingio->data.id = 4;
     //finished->data->id = 5;
-    printf("%d\n",readrunning.data.id);
-    //printf("%d\n",readrunning->next->data->id);
-    //printf("%d\n",waitingio->data->id);
+    printf("%d\n",readrunning->data.id);
+    printf("%d\n",readrunning->next->data.id);
+    printf("%d\n",waitingio->data.id);
     //printf("%d\n",finished->data->id);
 }
