@@ -22,15 +22,15 @@ struct queue * waitingio;
 struct queue * finished;
 
 void *job() {
-
+printf("I've got a job for you whore\n");
 }
 
 void *cpu() {
-
+printf("cpu Thread yo\n");
 }
 
 void *iostuff() {
-
+printf("io thread bitch\n");
 }
 
 int pop() {
@@ -40,19 +40,24 @@ int pop() {
 int main() {
     pthread_t threadz[16];
     int i;
-    for(i = 0; i <= 7; i ++)
+    for(i = 0; i <= 7; i++)
     {
 	pthread_create(&threadz[i],NULL,cpu,NULL);
     }
-    for(i = 8; i <= 11; i ++)
+    for(i = 8; i <= 11; i++)
     {
 	pthread_create(&threadz[i],NULL,iostuff,NULL);
     }
-    for(i = 12; i <= 15; i ++)
+    for(i = 12; i <= 15; i++)
     {
 	pthread_create(&threadz[i],NULL,job, NULL);
     }
     printf("yar\n");
+    for(i=0; i < 15; i++)
+	{
+	pthread_join(threadz[i],NULL);
+	}
+
 /*
     struct queue piggy;
     readrunning = &piggy;
