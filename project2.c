@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 struct job {
     int id;
@@ -20,15 +21,15 @@ struct queue * readrunning;
 struct queue * waitingio;
 struct queue * finished;
 
-int job() {
+void *job() {
 
 }
 
-int cpu() {
+void *cpu() {
 
 }
 
-int iostuff() {
+void *iostuff() {
 
 }
 
@@ -41,16 +42,17 @@ int main() {
     int i;
     for(i = 0; i <= 7; i ++)
     {
-	pthread_create(&threadz[i],NULL,int cpu,(*)(void *));
+	pthread_create(&threadz[i],NULL,cpu,NULL);
     }
     for(i = 8; i <= 11; i ++)
     {
-	pthread_create(&threadz[i],NULL,int iostuff,(*)(void *));
+	pthread_create(&threadz[i],NULL,iostuff,NULL);
     }
     for(i = 12; i <= 15; i ++)
     {
-	pthread_create(&threadz[i],NULL,int job, (*)(void *));
+	pthread_create(&threadz[i],NULL,job, NULL);
     }
+    printf("yar\n");
 /*
     struct queue piggy;
     readrunning = &piggy;
