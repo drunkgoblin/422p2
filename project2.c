@@ -21,12 +21,28 @@ struct queue * readrunning;
 struct queue * waitingio;
 struct queue * finished;
 
-void *job() {
+//A newly created job
+struct job *newly_created_job;
+
+void *job(int job_id) {
 printf("I've got a job for you whore\n");
+struct job current_job;
+newly_created_job = &current_job;
+newly_created_job->id = job_id;
+printf("The newly created job id is %d\n", newly_created_job->id);
+	
 }
 
 void *cpu() {
 printf("cpu Thread yo\n");
+//update the job data structure with the completed phase
+
+//add jobs to the run queue when thier phase is runnable
+
+//add jobs to the I/O queue if CPU phase is completed and next phase is I/O  bound
+
+//If a job has finished all its phases, put it to the finished queue
+
 }
 
 void *iostuff() {
@@ -50,7 +66,7 @@ int main() {
     }
     for(i = 12; i <= 15; i++)
     {
-	pthread_create(&threadz[i],NULL,job, NULL);
+	pthread_create(&threadz[i],NULL,job(3), NULL);
     }
     printf("yar\n");
     for(i=0; i < 15; i++)
