@@ -37,31 +37,32 @@ newly_created_job->current_phase = 1;
 newly_created_job->completed = 0; //not completed yet
 newly_created_job-> phase_and_dur[0][0] = 1;
 printf("The newly created job id is %d\n", newly_created_job->id);
-	
+
 }
 
 void *cpu() {
 printf("cpu Thread yo\n");
 //update the job data structure with the completed phase
-int;
+int i ;
 for(i = 0; i < NUM_PHASES; i++)
 {
-	
+
 }
 //add jobs to the run queue when thier phase is runnable
 for(i = 0; i < NUM_PHASES; i++)
 {
-	//add jobs from the waiting queue to the runnin queue
-	while(waitingio != null)
-	{
-		struct *job job_iterator;
-		job_iterator = waitingio;
-	//	readrunning ->next = wa
-	}
-	printf("Job %d has been added to the running queue.\n", newly_created_job->)
+//add jobs from the waiting queue to the runnin queue
+/*while(waitingio != NULL)
+{
+struct *job job_iterator;
+job_iterator = waitingio;
+// readrunning ->next = wa
+}
+*/
+printf("Job %d has been added to the running queue.\n", newly_created_job->id);
 }
 
-//add jobs to the I/O queue if CPU phase is completed and next phase is I/O  bound
+//add jobs to the I/O queue if CPU phase is completed and next phase is I/O bound
 
 //If a job has finished all its phases, put it to the finished queue
 
@@ -80,37 +81,38 @@ int main() {
     int i;
     for(i = 0; i <= 7; i++)
     {
-	pthread_create(&threadz[i],NULL,cpu,NULL);
+pthread_create(&threadz[i],NULL,cpu,NULL);
     }
     for(i = 8; i <= 11; i++)
     {
-	pthread_create(&threadz[i],NULL,iostuff,NULL);
+pthread_create(&threadz[i],NULL,iostuff,NULL);
     }
     for(i = 12; i <= 15; i++)
     {
-	pthread_create(&threadz[i],NULL,job(3), NULL);
+pthread_create(&threadz[i],NULL,job(3), NULL);
     }
     printf("yar\n");
     for(i=0; i < 15; i++)
-	{
-	pthread_join(threadz[i],NULL);
-	}
+{
+pthread_join(threadz[i],NULL);
+}
 
 /*
-    struct queue piggy;
-    readrunning = &piggy;
-    readrunning->data.id = 3;
-    struct queue phillipe;
-    readrunning->next = &phillipe;
-    readrunning->next->data.id = 17;
-    struct queue shit;  
-    waitingio = &shit;
-    finished = malloc(sizeof(struct job));
-    waitingio->data.id = 4;
-    finished->data.id = 5;
-    printf("%d\n",readrunning->data.id);
-    printf("%d\n",readrunning->next->data.id);
-    printf("%d\n",waitingio->data.id);
-    printf("%d\n",finished->data.id);
+struct queue piggy;
+readrunning = &piggy;
+readrunning->data.id = 3;
+struct queue phillipe;
+readrunning->next = &phillipe;
+readrunning->next->data.id = 17;
+struct queue shit;
+waitingio = &shit;
+finished = malloc(sizeof(struct job));
+waitingio->data.id = 4;
+finished->data.id = 5;
+printf("%d\n",readrunning->data.id);
+printf("%d\n",readrunning->next->data.id);
+printf("%d\n",waitingio->data.id);
+printf("%d\n",finished->data.id);
 */
 }
+
