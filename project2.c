@@ -2,13 +2,14 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#define NUM_PHASES 10
 
 struct job {
     int id;
     int phases;
     int current_phase;
     // Phase types: 1 = CPU phase; 2 = IO phase
-    int phase_and_dur[10][10];
+    int phase_and_dur[NUM_PHASES][NUM_PHASES];
     int completed;
 };
 
@@ -29,6 +30,12 @@ printf("I've got a job for you whore\n");
 struct job current_job;
 newly_created_job = &current_job;
 newly_created_job->id = job_id;
+//Number of phases is 2 (cpu and IO)
+newly_created_job->phases = 2;
+//jobs start from cpu phase
+newly_created_job->current_phase = 1;
+newly_created_job->completed = 0; //not completed yet
+newly_created_job-> phase_and_dur[0][0] = 1;
 printf("The newly created job id is %d\n", newly_created_job->id);
 	
 }
@@ -36,8 +43,23 @@ printf("The newly created job id is %d\n", newly_created_job->id);
 void *cpu() {
 printf("cpu Thread yo\n");
 //update the job data structure with the completed phase
-
+int;
+for(i = 0; i < NUM_PHASES; i++)
+{
+	
+}
 //add jobs to the run queue when thier phase is runnable
+for(i = 0; i < NUM_PHASES; i++)
+{
+	//add jobs from the waiting queue to the runnin queue
+	while(waitingio != null)
+	{
+		struct *job job_iterator;
+		job_iterator = waitingio;
+	//	readrunning ->next = wa
+	}
+	printf("Job %d has been added to the running queue.\n", newly_created_job->)
+}
 
 //add jobs to the I/O queue if CPU phase is completed and next phase is I/O  bound
 
