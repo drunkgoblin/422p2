@@ -178,7 +178,12 @@ printf("%d\n",finished->data.id);
     job(1); //create a job
     readrunning = (struct queue *) malloc(sizeof(struct queue));
     readrunning = add(1, newly_created_job);
+    job(2);
+    finished = (struct queue *) malloc(sizeof(struct queue));
+    finished = add(3, newly_created_job);
     printf("First test %d\n", readrunning->data.id);
     printf("Removed job is = %d\n", pop(readrunning)->id);
+    printf("second test %d\n", finished->data.id);
+    printf("Removed job is = %d\n", pop(finished)->id);
 }
 
