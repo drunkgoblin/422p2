@@ -115,8 +115,7 @@ struct queue *add(int queue_type, struct job *the_job){
     if(the_queue->size == 0)//queue is empty
     {
         the_queue->data = *the_job;
-        the_queue->next = NULL;
-  
+        the_queue->next = NULL; 
     }
     else//queue is not empty, so add a job infront of it. FIFO
     {
@@ -178,7 +177,7 @@ printf("%d\n",finished->data.id);
 
     job(1); //create a job
     readrunning = (struct queue *) malloc(sizeof(struct queue));
-    readrunning = add(3, newly_created_job);
+    readrunning = add(1, newly_created_job);
     printf("First test %d\n", readrunning->data.id);
     printf("Removed job is = %d\n", pop(readrunning)->id);
 }
