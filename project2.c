@@ -14,14 +14,16 @@ struct job {
 };
 
 struct queue {
-    int size;
     struct job data;
     struct queue * next;
 };
-
+//pointers to heads and tails of queues.
 struct queue * readrunning;
+struct queue * readrunningend;
 struct queue * waitingio;
+struct queue * waitingioend;
 struct queue * finished;
+struct queue * finishedend;
 
 //A newly created job
 struct job *newly_created_job = NULL;
@@ -93,10 +95,34 @@ struct job *pop(struct queue *the_queue) {
     }
     return next_job;
 }
+
+/**
+pass in the end pointer for the queue.
+**/
+void add(struct queue *tail, struct job *newJob) {
+    struct queue *newQueue = (struct queue *) malloc(sizeof(struct queue));
+    struct queue *temp = tail;
+    if (!tail) { //queue is empty
+        tail = newQueue;
+        tail->data = *newJob;
+        tail->next = NULL;
+    }else {
+        temp = tail->next;
+        while (temp->next) {
+            temp = temp->next;
+        }
+        newQueue->data = *newJob;
+        temp = newQueue;;
+    }
+    printf("job id number: %d\n", tail->data.id);
+
+}
+
 /**
 *Add item to the queue
 * queue type 1 = readyrunning, 2 = waiting, 3 = finished
 **/
+/*
 struct queue *add(int queue_type, struct job *the_job){
     struct queue *the_queue;
 
@@ -128,9 +154,12 @@ struct queue *add(int queue_type, struct job *the_job){
 
     return the_queue;
 
-}
+}*/
 
 int main() {
+   // readrunningend = readrunning;
+   // waitingioend = waitingio;
+   // finishedend = finished;
 /**
 //initialize
 newly_created_job = (struct job *) malloc(sizeof(struct job));
@@ -176,14 +205,14 @@ printf("%d\n",finished->data.id);
 */
 
     job(1); //create a job
-    readrunning = (struct queue *) malloc(sizeof(struct queue));
-    readrunning = add(1, newly_created_job);
+    //readrunning = (struct queue *) malloc(sizeof(struct queue));
+    add(readrunning, newly_created_job);
     job(2);
-    finished = (struct queue *) malloc(sizeof(struct queue));
-    finished = add(3, newly_created_job);
+    //finished = (struct queue *) malloc(sizeof(struct queue));
+    add(readrunning, newly_created_job);
     printf("First test %d\n", readrunning->data.id);
-    printf("Removed job is = %d\n", pop(readrunning)->id);
-    printf("second test %d\n", finished->data.id);
-    printf("Removed job is = %d\n", pop(finished)->id);
+    //printf("Removed job is = %d\n", pop(readrunning)->id);
+    //printf("second test %d\n", finished->data.id);
+    //printf("Removed job is = %d\n", pop(finished)->id);
 }
 
