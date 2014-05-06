@@ -83,6 +83,7 @@ void *iostuff() {
 struct job *pop(struct queue **the_queue) {
     struct queue *current = *the_queue;
     struct job *next_job = current->data;
+    free(*the_queue);
     *the_queue = current->next;
     return next_job;
 }
