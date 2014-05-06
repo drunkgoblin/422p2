@@ -83,18 +83,10 @@ void *iostuff() {
 /**
 * Remove the first item in the queue
 **/
-struct job *pop(struct queue *the_queue) {
-
-    struct job *next_job = the_queue->data;
-    struct queue *current = the_queue;
-    while(current != NULL)
-    {
-        next_job = current->data;
-
-        current = current->next;
-
-
-    }
+struct job *pop(struct queue **the_queue) {
+    struct queue *current = *the_queue;
+    struct job *next_job = current->data;
+    *the_queue = current->next;
     return next_job;
 }
 
@@ -102,7 +94,6 @@ struct job *pop(struct queue *the_queue) {
 pass in the end pointer for the queue.
 **/
 void *add(struct queue **tail, struct job **newJob) {
-   // struct queue *newQueue = malloc(sizeof(struct queue));
     struct queue *temp = *tail;
     if (!temp) { //queue is empty
         temp = malloc(sizeof(struct queue));
@@ -110,12 +101,9 @@ void *add(struct queue **tail, struct job **newJob) {
         temp->data = *newJob;
         temp->next = NULL;
     }else {
-        //temp = temp->next;
         while (temp->next) {
             temp = temp->next;
         }
-        //newQueue->data = *newJob;
-        //temp->next = newQueue;
         temp->next = malloc(sizeof(struct queue));
         temp->next->data = *newJob;
         temp = temp->next;
@@ -217,8 +205,8 @@ printf("%d\n",finished->data.id);
     //finished = (struct queue *) malloc(sizeof(struct queue));
     add(&readrunning, &newly_created_job);
     printf("First test %d\n", readrunning->data->id);
-    //printf("Removed job is = %d\n", pop(readrunning)->id);
     printf("second test %d\n", readrunning->next->data->id);
-    //printf("Removed job is = %d\n", pop(finished)->id);
+    printf("Removed job is = %d\n", pop(&readrunning)->id);
+    printf("Removed job is = %d\n", pop(&readrunning)->id);
 }
 
