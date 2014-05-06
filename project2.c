@@ -17,13 +17,10 @@ struct queue {
     struct job * data;
     struct queue * next;
 };
-//pointers to heads and tails of queues.
+//pointers to heads of queues.
 struct queue * readrunning;
-struct queue * readrunningend;
 struct queue * waitingio;
-struct queue * waitingioend;
 struct queue * finished;
-struct queue * finishedend;
 
 //A newly created job
 struct job *newly_created_job = NULL;
@@ -151,9 +148,7 @@ struct queue *add(int queue_type, struct job *the_job){
 }*/
 
 int main() {
-   // readrunningend = readrunning;
-   // waitingioend = waitingio;
-   // finishedend = finished;
+
 /**
 //initialize
 newly_created_job = (struct job *) malloc(sizeof(struct job));
