@@ -14,7 +14,7 @@ struct job {
 };
 
 struct queue {
-    struct job data;
+    struct job * data;
     struct queue * next;
 };
 //pointers to heads and tails of queues.
@@ -41,7 +41,8 @@ void *job(int job_id) {
     newly_created_job->completed = 0; //not completed yet
     newly_created_job-> phase_and_dur[0][0] = 1;
 
-    printf("The newly created job id is %d\n", newly_created_job->id);
+    printf("The newly created job id is %d\n", newly_created_job->id); 
+    return;
 
 }
 
@@ -72,6 +73,7 @@ void *cpu() {
 //add jobs to the I/O queue if CPU phase is completed and next phase is I/O bound
 
 //If a job has finished all its phases, put it to the finished queue
+    return;
 
 }
 
@@ -83,11 +85,11 @@ void *iostuff() {
 **/
 struct job *pop(struct queue *the_queue) {
 
-    struct job *next_job = &the_queue->data;
+    struct job *next_job = the_queue->data;
     struct queue *current = the_queue;
     while(current != NULL)
     {
-        next_job = &current->data;
+        next_job = current->data;
 
         current = current->next;
 
@@ -99,23 +101,27 @@ struct job *pop(struct queue *the_queue) {
 /**
 pass in the end pointer for the queue.
 **/
-void add(struct queue *tail, struct job *newJob) {
-    struct queue *newQueue = (struct queue *) malloc(sizeof(struct queue));
-    struct queue *temp = tail;
-    if (!tail) { //queue is empty
-        tail = newQueue;
-        tail->data = *newJob;
-        tail->next = NULL;
+void *add(struct queue **tail, struct job **newJob) {
+   // struct queue *newQueue = malloc(sizeof(struct queue));
+    struct queue *temp = *tail;
+    if (!temp) { //queue is empty
+        temp = malloc(sizeof(struct queue));
+        *tail = temp;
+        temp->data = *newJob;
+        temp->next = NULL;
     }else {
-        temp = tail->next;
+        //temp = temp->next;
         while (temp->next) {
             temp = temp->next;
         }
-        newQueue->data = *newJob;
-        temp = newQueue;;
+        //newQueue->data = *newJob;
+        //temp->next = newQueue;
+        temp->next = malloc(sizeof(struct queue));
+        temp->next->data = *newJob;
+        temp = temp->next;
     }
-    printf("job id number: %d\n", tail->data.id);
-
+    printf("job id number: %d\n", temp->data->id);
+    return;
 }
 
 /**
@@ -206,13 +212,13 @@ printf("%d\n",finished->data.id);
 
     job(1); //create a job
     //readrunning = (struct queue *) malloc(sizeof(struct queue));
-    add(readrunning, newly_created_job);
+    add(&readrunning, &newly_created_job);
     job(2);
     //finished = (struct queue *) malloc(sizeof(struct queue));
-    add(readrunning, newly_created_job);
-    printf("First test %d\n", readrunning->data.id);
+    add(&readrunning, &newly_created_job);
+    printf("First test %d\n", readrunning->data->id);
     //printf("Removed job is = %d\n", pop(readrunning)->id);
-    //printf("second test %d\n", finished->data.id);
+    printf("second test %d\n", readrunning->next->data->id);
     //printf("Removed job is = %d\n", pop(finished)->id);
 }
 
