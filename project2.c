@@ -67,22 +67,22 @@ void *add(struct queue **tail, struct job **newJob) {
 }
 
 void *iostuff() {
-    printf("io thread bitch\n");
+    
     pthread_mutex_lock(&gimp);
     while(completed_jobs < MAX_JOBS) {
-        //printf("io thread bitch yo\n");
+      
         //pthread_mutex_lock(&gimp);
         struct job * the_job = pop(&waitingio);
         //printf("io thread bitch ass yo, poppin'\n");
         pthread_mutex_unlock(&gimp);
         if (the_job != NULL) {
             //struct job * jobptr = the_job;
-            printf("shut this io bitch up: %d\n",the_job->id);
+             printf("Job %d is running on IO\n",the_job->id);
             sleep(the_job->Dur[the_job->current_phase] - 1);
             the_job->current_phase++;
             if(the_job->current_phase > the_job->phases)
             {
-                printf("io thread bitch ass yo, bust a nut!\n");
+                
                 the_job->completed = 1;
                 pthread_mutex_lock(&gimp);
                 completed_jobs++;
@@ -90,11 +90,12 @@ void *iostuff() {
             }
             if(the_job->completed == 1)
             {
-                printf("in the butt, 5 5 5\n");
+                printf("Job %d is done, putting on finished queue\n",the_job->id);
                 pthread_mutex_lock(&gimp);
                 add(&finished, &the_job);
                 //pthread_mutex_unlock(&gimp);
             }else {
+		printf("Job %d is moving to CPU queue\n",the_job->id);
                 pthread_mutex_lock(&gimp);
                 add(&readrunning, &the_job);
                 //pthread_mutex_unlock(&gimp);
@@ -116,13 +117,12 @@ void *cpu() {
         //printf("cpu Thread yo, poppin'\n");
         pthread_mutex_unlock(&gimp);
         if (the_job != NULL) {
-            printf("this fucking whore is working yo %d\n",the_job->id);
+            printf("Job %d is running on CPU\n",the_job->id);
             //struct job * jobptr = the_job;
             sleep(the_job->Dur[the_job->current_phase] - 1);
             the_job->current_phase++;
             if(the_job->current_phase > the_job->phases)
             {
-                printf("cpu Thread yo, done yo!\n");
                 the_job->completed = 1;
                 pthread_mutex_lock(&gimp);
                 completed_jobs++;
@@ -130,16 +130,17 @@ void *cpu() {
             }
             if(the_job->completed == 1)
             {
-                printf("stick it in your ear\n");
+                printf("Job %d is done, putting in finished queue\n",the_job->id);
                 pthread_mutex_lock(&gimp);
                 add(&finished, &the_job);
                 //pthread_mutex_unlock(&gimp);
             }else {
+		printf("Job %d is moving to IO queue\n",the_job->id);
                 pthread_mutex_lock(&gimp);
                 add(&waitingio, &the_job);
                 //pthread_mutex_unlock(&gimp);
             }
-        } 
+        }
     }
     pthread_mutex_unlock(&gimp);
     return;
@@ -171,7 +172,7 @@ void *job() {
     newly_created_job-> Dur[i] = 1;
     }
 
-    printf("The newly created job id is %d\n", newly_created_job->id);
+    printf("Job %d has been created\n", newly_created_job->id);
     pthread_mutex_lock(&gimp);
     add(&readrunning, &newly_created_job);
     //pthread_mutex_unlock(&gimp);
@@ -180,44 +181,6 @@ void *job() {
     return;
 
 }
-
-/**
-*Add item to the queue
-* queue type 1 = readyrunning, 2 = waiting, 3 = finished
-**/
-/*
-struct queue *add(int queue_type, struct job *the_job){
-    struct queue *the_queue;
-
-    switch(queue_type)
-    {
-    case 1:
-        the_queue = readrunning;
-        break;
-    case 2:
-        the_queue = waitingio;
-        break;
-    case 3:
-        the_queue = finished;
-        break;
-    }
-    if(the_queue->size == 0)//queue is empty
-    {
-        the_queue->data = *the_job;
-        the_queue->next = NULL; 
-    }
-    else//queue is not empty, so add a job infront of it. FIFO
-    {
-       struct queue *new_queue =
-             (struct queue *) malloc(sizeof(struct queue));
-       new_queue->data = *the_job;
-       new_queue->next = the_queue;
-    }
-    the_queue->size++;
-
-    return the_queue;
-
-}*/
 
 int main() {
 
@@ -250,32 +213,15 @@ pthread_join(threadz[i],NULL);
 printf("oops!\n");
 pthread_exit(NULL);
 /*
-struct queue piggy;
-readrunning = &piggy;
-readrunning->data.id = 3;
-struct queue phillipe;
-readrunning->next = &phillipe;
-readrunning->next->data.id = 17;
-struct queue shit;
-waitingio = &shit;
-finished = malloc(sizeof(struct job));
-waitingio->data.id = 4;
-finished->data.id = 5;
-printf("%d\n",readrunning->data.id);
-printf("%d\n",readrunning->next->data.id);
-printf("%d\n",waitingio->data.id);
-printf("%d\n",finished->data.id);
-
-
-    job(1); //create a job
-    //readrunning = (struct queue *) malloc(sizeof(struct queue));
-    add(&readrunning, &newly_created_job);
-    job(2);
-    //finished = (struct queue *) malloc(sizeof(struct queue));
-    add(&readrunning, &newly_created_job);
-    printf("First test %d\n", readrunning->data->id);
-    printf("second test %d\n", readrunning->next->data->id);
-    printf("Removed job is = %d\n", pop(&readrunning)->id);
-    printf("Removed job is = %d\n", pop(&readrunning)->id);
+job(1); //create a job
+//readrunning = (struct queue *) malloc(sizeof(struct queue));
+add(&readrunning, &newly_created_job);
+job(2);
+//finished = (struct queue *) malloc(sizeof(struct queue));
+add(&readrunning, &newly_created_job);
+printf("First test %d\n", readrunning->data->id);
+printf("second test %d\n", readrunning->next->data->id);
+printf("Removed job is = %d\n", pop(&readrunning)->id);
+printf("Removed job is = %d\n", pop(&readrunning)->id);
 */
 }
