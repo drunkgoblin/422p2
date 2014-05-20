@@ -15,11 +15,11 @@ pthread_mutex_t completed_lock;
 int completed_jobs;
 int job_id;
 struct job {
+    int cpuId;
     int id;
     int phases;
     int current_phase;
     int Dur[NUM_PHASES];
-
     int completed;
 };
 
@@ -28,8 +28,9 @@ struct queue {
     struct queue * next;
 };
 //pointers to heads and tails of queues.
-struct queue * readrunning;
-struct queue * readrunningEnd;
+//struct queue * readrunning;
+//struct queue * readrunningEnd;
+struct queue * run[8][2];
 struct queue * waitingio;
 struct queue * waitingioEnd;
 struct queue * finished;
@@ -96,9 +97,9 @@ void *iostuff() {//ooh bag fries. I should try those. I always get BK onion ring
                 add(&finished,&finishedEnd,&the_job);
                 pthread_mutex_unlock(&fin_lock);
             }else {
-printf("Job %d is moving to CPU queue\n",the_job->data->id);
+                printf("Job %d is moving to CPU queue\n",the_job->data->id);
                 pthread_mutex_lock(&rr_lock);
-                add(&readrunning,&readrunningEnd,&the_job);
+                add(&run[newly_created_job->data->cpuId][0],&run[newly_created_job->data->cpuId][1],&the_job);
                 pthread_mutex_unlock(&rr_lock);
             }
         
@@ -151,6 +152,7 @@ printf("Job %d is moving to IO queue\n",the_job->data->id);
 void *job() {
     
     //loop be here arrrrrrrrrrrrrrrrrrrrr!
+    int cpuId = 0;
     int id = 0;
     srand(time(NULL));
     pthread_mutex_lock(&id_lock);
@@ -162,6 +164,12 @@ void *job() {
     sleep(2);
     struct queue * newly_created_job = (struct queue *) malloc(sizeof(struct queue));
     newly_created_job->data = (struct job *) malloc(sizeof(struct job));
+    newly_created_job->data->cpuId = cpuId;
+    if (cpuId < 7) {
+        cpuId++;
+    } else {
+        cpuId = 0;
+    }
     newly_created_job->data->id = id;
     //Number of phases is 2 (cpu and IO)
     newly_created_job->data->phases = (rand() % NUM_PHASES) + 1;
@@ -177,7 +185,7 @@ void *job() {
 
     printf("Job %d has been created\n", newly_created_job->data->id);
     pthread_mutex_lock(&rr_lock);
-    add(&readrunning,&readrunningEnd,&newly_created_job);
+    add(&run[newly_created_job->data->cpuId][0],&run[newly_created_job->data->cpuId][1],&newly_created_job);
     pthread_mutex_unlock(&rr_lock);
     if (finished != NULL) {
         pthread_mutex_lock(&fin_lock);
