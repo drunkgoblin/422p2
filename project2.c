@@ -4,8 +4,8 @@
 #include <stdarg.h>
 #include <time.h>
 
-#define NUM_PHASES 2
-#define MAX_JOBS 8
+#define NUM_PHASES 3
+#define MAX_JOBS 24
 pthread_mutex_t rr_lock;
 pthread_mutex_t io_lock;
 pthread_mutex_t fin_lock;
@@ -165,12 +165,6 @@ void *job() {
     struct queue * newly_created_job = (struct queue *) malloc(sizeof(struct queue));
     newly_created_job->data = (struct job *) malloc(sizeof(struct job));
     newly_created_job->data->cpuId = cpuId;
-    printf("Job number: %d created\n", cpuId);
-    if (cpuId < 7) {
-        cpuId++;
-    } else {
-        cpuId = 0;
-    }
     newly_created_job->data->id = id;
     //Number of phases is 2 (cpu and IO)
     newly_created_job->data->phases = (rand() % NUM_PHASES) + 1;
@@ -198,6 +192,11 @@ void *job() {
         printf("Memory used by job %d is free!\n",goner->data->id);
             free(goner->data);
         free(goner);
+    }
+    if (cpuId < 7) {
+        cpuId++;
+    } else {
+        cpuId = 0;
     }
     pthread_mutex_lock(&id_lock);
     }
