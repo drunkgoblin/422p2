@@ -18,7 +18,6 @@ struct job {
     int id;
     int phases;
     int current_phase;
-    // Phase types: 1 = CPU phase; 2 = IO phase
     int Dur[NUM_PHASES];
 
     int completed;
@@ -42,8 +41,8 @@ struct queue * finishedEnd;
 struct queue *pop(struct queue **the_queue) {
    struct queue *current = *the_queue;
     if (*the_queue != NULL) {
-        *the_queue = current->next;  
-        current->next = NULL;   
+        *the_queue = current->next;
+        current->next = NULL;
     } else {
        current= NULL;
     }
@@ -67,21 +66,18 @@ if (!*head) {
 }
 return;
 //should we leave all this in here when we turn in? awesome. hi shrew. die, mostly.
-//I wonder why it isn’t changing colors now its your name and theres a shrew up there, on 
+//I wonder why it isn’t changing colors now its your name and theres a shrew up there, on
 //my surface i’m logged in as me or something I vote yes, what do shrews do? /dies
 }
-void *iostuff() {//ooh bag fries. I should try those.   I always get BK onion rings hollaaaaaa
+void *iostuff() {//ooh bag fries. I should try those. I always get BK onion rings hollaaaaaa
     
     pthread_mutex_lock(&completed_lock);
     while(completed_jobs < MAX_JOBS) {
-        //printf("io thread bitch yo\n");
         pthread_mutex_unlock(&completed_lock);
         pthread_mutex_lock(&io_lock);
         struct queue * the_job = pop(&waitingio);
-        //printf("io thread bitch ass yo, poppin'\n");
         pthread_mutex_unlock(&io_lock);
         if (the_job != NULL) {
-            //struct job * jobptr = the_job;
              printf("Job %d is running on IO\n",the_job->data->id);
             sleep(the_job->data->Dur[the_job->data->current_phase] );
             the_job->data->current_phase++;
@@ -118,10 +114,8 @@ void *cpu() {
     pthread_mutex_lock(&completed_lock);
     while(completed_jobs < MAX_JOBS) {
          pthread_mutex_unlock(&completed_lock);
-        //printf("cpu Thread yo\n");
         pthread_mutex_lock(&rr_lock);
         struct queue * the_job = pop(&readrunning);
-        //printf("cpu Thread yo, poppin'\n");
         pthread_mutex_unlock(&rr_lock);
         if (the_job != NULL) {
             printf("Job %d is running on CPU\n",the_job->data->id);
@@ -162,8 +156,6 @@ void *job() {
     pthread_mutex_lock(&id_lock);
     while(job_id < MAX_JOBS)
     {
-    //pthread_mutex_lock(&gimp);
-    //if (job_id < MAX_JOBS) {
     id = job_id;
     job_id++;
     pthread_mutex_unlock(&id_lock);
@@ -175,7 +167,7 @@ void *job() {
     newly_created_job->data->phases = (rand() % NUM_PHASES) + 1;
     //jobs start from cpu phase
     newly_created_job->data->current_phase = 0;
-    newly_created_job->data->completed =  0; //not completed yet
+    newly_created_job->data->completed = 0; //not completed yet
     newly_created_job->next = NULL;
     int i = 0;
     for(i;i<newly_created_job->data->phases;i++)
@@ -226,7 +218,6 @@ int main() {
 
 
 //initialize
-//newly_created_job = (struct job *) malloc(sizeof(struct job));
 completed_jobs = 0;
 job_id = 0;
 pthread_mutex_init(&io_lock, NULL);
@@ -256,16 +247,4 @@ pthread_join(threadz[i],NULL);
 }
 printf("oops!\n");
 pthread_exit(NULL);
-/*
-job(1); //create a job
-//readrunning = (struct queue *) malloc(sizeof(struct queue));
-add(&readrunning, &newly_created_job);
-job(2);
-//finished = (struct queue *) malloc(sizeof(struct queue));
-add(&readrunning, &newly_created_job);
-printf("First test %d\n", readrunning->data->id);
-printf("second test %d\n", readrunning->next->data->id);
-printf("Removed job is = %d\n", pop(&readrunning)->id);
-printf("Removed job is = %d\n", pop(&readrunning)->id);
-*/
 }
