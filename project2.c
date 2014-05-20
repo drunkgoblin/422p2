@@ -4,8 +4,8 @@
 #include <stdarg.h>
 #include <time.h>
 
-#define NUM_PHASES 4
-#define MAX_JOBS 5
+#define NUM_PHASES 2
+#define MAX_JOBS 8
 pthread_mutex_t rr_lock;
 pthread_mutex_t io_lock;
 pthread_mutex_t fin_lock;
@@ -99,7 +99,7 @@ void *iostuff() {//ooh bag fries. I should try those. I always get BK onion ring
             }else {
                 printf("Job %d is moving to CPU queue\n",the_job->data->id);
                 pthread_mutex_lock(&rr_lock);
-                add(&run[newly_created_job->data->cpuId][0],&run[newly_created_job->data->cpuId][1],&the_job);
+                add(&run[the_job->data->cpuId][0],&run[the_job->data->cpuId][1],&the_job);
                 pthread_mutex_unlock(&rr_lock);
             }
         
@@ -110,13 +110,13 @@ void *iostuff() {//ooh bag fries. I should try those. I always get BK onion ring
     return;
 }
 
-void *cpu() {
-
+void *cpu(void * me) {
+    int id = ((int )me);
     pthread_mutex_lock(&completed_lock);
     while(completed_jobs < MAX_JOBS) {
          pthread_mutex_unlock(&completed_lock);
         pthread_mutex_lock(&rr_lock);
-        struct queue * the_job = pop(&readrunning);
+        struct queue * the_job = pop(&run[id][0]);
         pthread_mutex_unlock(&rr_lock);
         if (the_job != NULL) {
             printf("Job %d is running on CPU\n",the_job->data->id);
@@ -137,7 +137,7 @@ void *cpu() {
                 add(&finished,&finishedEnd,&the_job);
                 pthread_mutex_unlock(&fin_lock);
             }else {
-printf("Job %d is moving to IO queue\n",the_job->data->id);
+                printf("Job %d is moving to IO queue\n",the_job->data->id);
                 pthread_mutex_lock(&io_lock);
                 add(&waitingio,&waitingioEnd,&the_job);
                 pthread_mutex_unlock(&io_lock);
@@ -165,6 +165,7 @@ void *job() {
     struct queue * newly_created_job = (struct queue *) malloc(sizeof(struct queue));
     newly_created_job->data = (struct job *) malloc(sizeof(struct job));
     newly_created_job->data->cpuId = cpuId;
+    printf("Job number: %d created\n", cpuId);
     if (cpuId < 7) {
         cpuId++;
     } else {
@@ -237,7 +238,7 @@ pthread_t threadz[16];
 int i;
 for(i = 0; i <= 7; i++)
 {
-pthread_create(&threadz[i],NULL,cpu,NULL);
+pthread_create(&threadz[i],NULL,cpu,(void *) i);
 }
 for(i = 8; i <= 11; i++)
 {
@@ -253,6 +254,6 @@ for(i=0; i <= 15; i++)
 {
 pthread_join(threadz[i],NULL);
 }
-printf("oops!\n");
+printf("Done bitches!!\n");
 pthread_exit(NULL);
 }
