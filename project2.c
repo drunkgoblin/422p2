@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define NUM_PHASES 3
-#define MAX_JOBS 40
+#define MAX_JOBS 300
 #define QUANTUM 2
 pthread_mutex_t rr_lock;
 pthread_mutex_t io_lock;
@@ -122,30 +122,30 @@ void *cpu(void * me) {
         if (the_job != NULL) {
             printf("Job %d is running on CPU\n",the_job->data->id);
             //struct job * jobptr = the_job;
-	    if (the_job->data->Dur[the_job->data->current_phase] >= QUANTUM)
-	    {
-	    // run job for quantum
-	    sleep(QUANTUM);
-	    the_job->data->Dur[the_job->data->current_phase] = the_job->data->Dur[the_job->data->current_phase] - QUANTUM;
+if (the_job->data->Dur[the_job->data->current_phase] >= QUANTUM)
+{
+// run job for quantum
+sleep(QUANTUM);
+the_job->data->Dur[the_job->data->current_phase] = the_job->data->Dur[the_job->data->current_phase] - QUANTUM;
                if (the_job->data->Dur[the_job->data->current_phase] == 0)
                {
-	       //if time is zero move to IO queue and continue
+//if time is zero move to IO queue and continue
                printf("Job %d is moving to IO queue\n",the_job->data->id);
                pthread_mutex_lock(&io_lock);
                add(&waitingio,&waitingioEnd,&the_job);
                pthread_mutex_unlock(&io_lock);
-	       pthread_mutex_lock(&completed_lock);
+pthread_mutex_lock(&completed_lock);
                continue;
                }
-	    // if job doesnt complete move it back into run queue and continue
-	    printf("job has been interupted\n");
+// if job doesnt complete move it back into run queue and continue
+printf("job has been interrupted\n");
             pthread_mutex_lock(&rr_lock);
-	    add(&run[the_job->data->cpuId][0],&run[the_job->data->cpuId][1],&the_job);
+add(&run[the_job->data->cpuId][0],&run[the_job->data->cpuId][1],&the_job);
             pthread_mutex_unlock(&rr_lock);
-	     pthread_mutex_lock(&completed_lock);
+pthread_mutex_lock(&completed_lock);
             continue;
             //if time is less than quantum do what it always did
-            } 
+            }
                     sleep(the_job->data->Dur[the_job->data->current_phase] );
                     the_job->data->current_phase++;
                     if(the_job->data->current_phase > the_job->data->phases - 1)
@@ -170,51 +170,11 @@ void *cpu(void * me) {
         
         }
         pthread_mutex_lock(&completed_lock);
-	
+
     }
     pthread_mutex_unlock(&completed_lock);
     return;
 }
-
-/*
-void *cpu(void * me) {
-    int id = *((int *)me);
-    pthread_mutex_lock(&completed_lock);
-    while(completed_jobs < MAX_JOBS) {
-         pthread_mutex_unlock(&completed_lock);
-        pthread_mutex_lock(&rr_lock);
-        struct queue * the_job = pop(&run[id][0]);
-        pthread_mutex_unlock(&rr_lock);
-        if (the_job != NULL) {
-            printf("Job %d is running on CPU\n",the_job->data->id);
-            //struct job * jobptr = the_job;
-            sleep(the_job->data->Dur[the_job->data->current_phase] );
-            the_job->data->current_phase++;
-            if(the_job->data->current_phase > the_job->data->phases - 1)
-            {
-                the_job->data->completed = 1;
-                pthread_mutex_lock(&completed_lock);
-                completed_jobs++;
-                pthread_mutex_unlock(&completed_lock);
-            }
-            if(the_job->data->completed == 1)
-            {
-                printf("Job %d is done, putting in finished queue\n",the_job->data->id);
-                pthread_mutex_lock(&fin_lock);
-                add(&finished,&finishedEnd,&the_job);
-                pthread_mutex_unlock(&fin_lock);
-            }else {
-                printf("Job %d is moving to IO queue\n",the_job->data->id);
-                pthread_mutex_lock(&io_lock);
-                add(&waitingio,&waitingioEnd,&the_job);
-                pthread_mutex_unlock(&io_lock);
-            }
-        }
-        pthread_mutex_lock(&completed_lock);
-    }
-    pthread_mutex_unlock(&completed_lock);
-    return;
-}*/
 
 void *job() {
     
@@ -322,6 +282,6 @@ for(i=0; i <= 15; i++)
 {
 pthread_join(threadz[i],NULL);
 }
-printf("Done bitches!!\n");
+printf("Done!!\n");
 pthread_exit(NULL);
 }
